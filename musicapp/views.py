@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
-from django.db.models import Q
+from django.db.models import Q, query
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -53,11 +53,13 @@ def index(request):
     sliced_ids = [each['id'] for each in songs_english][:5]
     indexpage_english_songs = Song.objects.filter(id__in=sliced_ids)
 
-    if len(request.GET) > 0:
-        search_query = request.GET.get('q')
-        filtered_songs = songs.filter(Q(name__icontains=search_query)).distinct()
-        context = {'all_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
-        return render(request, 'musicapp/index.html', context)
+    query = request.GET.get('q')
+
+    if request.method == 'GET':
+        if query:
+            filtered_songs = songs.filter(Q(name__icontains=query)).distinct()
+            context = {'all_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
+            return render(request, 'musicapp/index.html', context)
 
     context = {
         'all_songs':indexpage_songs,
