@@ -6,13 +6,13 @@ from django.contrib.auth.models import User
 class Song(models.Model):
 
     Language_Choice = (
-              ('Hindi', 'Hindi'),
+              ('Vietnamese', 'Vietnamese'),
               ('English', 'English'),
           )
 
     name = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
-    language = models.CharField(max_length=20,choices=Language_Choice,default='Hindi')
+    language = models.CharField(max_length=20,choices=Language_Choice,default='Vietnamese')
     song_img = models.FileField()
     year = models.IntegerField()
     singer = models.CharField(max_length=200)

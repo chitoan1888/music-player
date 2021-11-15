@@ -43,10 +43,10 @@ def index(request):
     sliced_ids = [each['id'] for each in songs_all][:5]
     indexpage_songs = Song.objects.filter(id__in=sliced_ids)
 
-    # Display Hindi Songs
-    songs_hindi = list(Song.objects.filter(language='Hindi').values('id'))
-    sliced_ids = [each['id'] for each in songs_hindi][:5]
-    indexpage_hindi_songs = Song.objects.filter(id__in=sliced_ids)
+    # Display vn Songs
+    songs_vn = list(Song.objects.filter(language='Vietnamese').values('id'))
+    sliced_ids = [each['id'] for each in songs_vn][:5]
+    indexpage_vn_songs = Song.objects.filter(id__in=sliced_ids)
 
     # Display English Songs
     songs_english = list(Song.objects.filter(language='English').values('id'))
@@ -54,13 +54,15 @@ def index(request):
     indexpage_english_songs = Song.objects.filter(id__in=sliced_ids)
 
     if len(request.GET) > 0:
-        context = {'last_played':last_played_song,'query_search':True}
+        search_query = request.GET.get('q')
+        filtered_songs = songs.filter(Q(name__icontains=search_query)).distinct()
+        context = {'all_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
         return render(request, 'musicapp/index.html', context)
 
     context = {
         'all_songs':indexpage_songs,
         'recent_songs': recent_songs,
-        'hindi_songs':indexpage_hindi_songs,
+        'vn_songs':indexpage_vn_songs,
         'english_songs':indexpage_english_songs,
         'last_played':last_played_song,
         'first_time': first_time,
@@ -69,9 +71,9 @@ def index(request):
     return render(request, 'musicapp/index.html', context=context)
 
 
-def hindi_songs(request):
+def vn_songs(request):
 
-    hindi_songs = Song.objects.filter(language='Hindi')
+    vn_songs = Song.objects.filter(language='vn')
 
     #Last played song
     last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
@@ -84,12 +86,12 @@ def hindi_songs(request):
     query = request.GET.get('q')
 
     if query:
-        hindi_songs = Song.objects.filter(Q(name__icontains=query)).distinct()
-        context = {'hindi_songs': hindi_songs}
-        return render(request, 'musicapp/hindi_songs.html', context)
+        vn_songs = Song.objects.filter(Q(name__icontains=query)).distinct()
+        context = {'vn_songs': vn_songs}
+        return render(request, 'musicapp/vn_songs.html', context)
 
-    context = {'hindi_songs':hindi_songs,'last_played':last_played_song}
-    return render(request, 'musicapp/hindi_songs.html',context=context)
+    context = {'vn_songs':vn_songs,'last_played':last_played_song}
+    return render(request, 'musicapp/vn_songs.html',context=context)
 
 
 def english_songs(request):
