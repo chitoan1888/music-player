@@ -17,8 +17,8 @@ def index(request):
         for id in recent_id:
             recent_songs.append(recent_songs_unsorted.get(id=id))
     else:
-        recent = None
-        recent_songs = None
+        recent = Recent.objects.get(id=3)
+        recent_songs = Recent.objects.get(id=3)
 
     first_time = False
     #Last played song
@@ -82,7 +82,7 @@ def vn_songs(request):
         last_played_id = last_played_list[0]['song_id']
         last_played_song = Song.objects.get(id=last_played_id)
     else:
-        last_played_song = Song.objects.get(id=7)
+        last_played_song = Song.objects.get(id=3)
 
     query = request.GET.get('q')
 
@@ -105,7 +105,7 @@ def english_songs(request):
         last_played_id = last_played_list[0]['song_id']
         last_played_song = Song.objects.get(id=last_played_id)
     else:
-        last_played_song = Song.objects.get(id=7)
+        last_played_song = Song.objects.get(id=3)
 
     query = request.GET.get('q')
 
@@ -164,7 +164,7 @@ def all_songs(request):
             last_played_song = Song.objects.get(id=last_played_id)
     else:
         first_time = True
-        last_played_song = Song.objects.get(id=7)
+        last_played_song = Song.objects.get(id=3)
 
     
     # apply search filters
