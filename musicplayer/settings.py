@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'musicplayer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'music-app-database',
+        'NAME': 'postgres',
         'USER': 'myadmin@music-app-database',
         'PASSWORD': 'Hannie@16879',
         'HOST': 'music-app-database.postgres.database.azure.com',
