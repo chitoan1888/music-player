@@ -30,7 +30,6 @@ def index(request):
         else:
             first_time = True
             last_played_song = Song.objects.get(id=3)
-
     else:
         first_time = True
         last_played_song = Song.objects.get(id=3)
