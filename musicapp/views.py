@@ -29,11 +29,11 @@ def index(request):
             last_played_song = Song.objects.get(id=last_played_id)
         else:
             first_time = True
-            last_played_song = Song.objects.get(id=0)
+            last_played_song = Song.objects.get(id=7)
 
     else:
         first_time = True
-        last_played_song = Song.objects.get(id=0)
+        last_played_song = Song.objects.get(id=7)
 
     #Display all songs
     songs = Song.objects.all()
@@ -54,9 +54,7 @@ def index(request):
     indexpage_english_songs = Song.objects.filter(id__in=sliced_ids)
 
     if len(request.GET) > 0:
-        search_query = request.GET.get('q')
-        filtered_songs = songs.filter(Q(name__icontains=search_query)).distinct()
-        context = {'all_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
+        context = {'last_played':last_played_song,'query_search':True}
         return render(request, 'musicapp/index.html', context)
 
     context = {
