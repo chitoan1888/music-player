@@ -22,18 +22,18 @@ def index(request):
 
     first_time = False
     #Last played song
-    # if not request.user.is_anonymous:
-    #     last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
-    #     if last_played_list:
-    #         last_played_id = last_played_list[0]['song_id']
-    #         last_played_song = Song.objects.get(id=last_played_id)
-    #     else:
-    #         first_time = True
-    #         last_played_song = Song.objects.get(id=7)
+    if not request.user.is_anonymous:
+        last_played_list = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+        if last_played_list:
+            last_played_id = last_played_list[0]['song_id']
+            last_played_song = Song.objects.get(id=last_played_id)
+        else:
+            first_time = True
+            last_played_song = Song.objects.get(id=7)
 
-    # else:
-    #     first_time = True
-    #     last_played_song = Song.objects.get(id=7)
+    else:
+        first_time = True
+        last_played_song = Song.objects.get(id=7)
 
     #Display all songs
     songs = Song.objects.all()
@@ -56,7 +56,7 @@ def index(request):
     if len(request.GET) > 0:
         search_query = request.GET.get('q')
         filtered_songs = songs.filter(Q(name__icontains=search_query)).distinct()
-        context = {'all_songs': filtered_songs,'query_search':True}
+        context = {'all_songs': filtered_songs,'last_played':last_played_song,'query_search':True}
         return render(request, 'musicapp/index.html', context)
 
     context = {
@@ -64,6 +64,7 @@ def index(request):
         'recent_songs': recent_songs,
         'hindi_songs':indexpage_hindi_songs,
         'english_songs':indexpage_english_songs,
+        'last_played':last_played_song,
         'first_time': first_time,
         'query_search':False,
     }
