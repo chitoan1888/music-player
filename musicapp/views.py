@@ -17,8 +17,12 @@ def index(request):
         for id in recent_id:
             recent_songs.append(recent_songs_unsorted.get(id=id))
     else:
-        recent = Recent.objects.get(id=3)
-        recent_songs = Recent.objects.get(id=3)
+        recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+        recent_id = [each['song_id'] for each in recent][:5]
+        recent_songs_unsorted = Song.objects.filter(id__in=recent_id,recent__user=request.user)
+        recent_songs = list()
+        for id in recent_id:
+            recent_songs.append(recent_songs_unsorted.get(id=id))
 
     first_time = False
     #Last played song
