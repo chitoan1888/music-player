@@ -17,9 +17,9 @@ def index(request):
         for id in recent_id:
             recent_songs.append(recent_songs_unsorted.get(id=id))
     else:
-        recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
+        recent = list(Recent.objects.values('song_id').order_by('-id'))
         recent_id = [each['song_id'] for each in recent][:5]
-        recent_songs_unsorted = Song.objects.filter(id__in=recent_id,recent__user=request.user)
+        recent_songs_unsorted = Song.objects.filter(id__in=recent_id)
         recent_songs = list()
         for id in recent_id:
             recent_songs.append(recent_songs_unsorted.get(id=id))
@@ -33,10 +33,16 @@ def index(request):
             last_played_song = Song.objects.get(id=last_played_id)
         else:
             first_time = True
-            last_played_song = Song.objects.get(id=3)
+            last_played_list = list(Recent.objects).values('song_id').order_by('-id')
+        if last_played_list:
+            last_played_id = last_played_list[0]['song_id']
+            last_played_song = Song.objects.get(id=last_played_id)
     else:
         first_time = True
-        last_played_song = Song.objects.get(id=3)
+        last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
+        if last_played_list:
+            last_played_id = last_played_list[0]['song_id']
+            last_played_song = Song.objects.get(id=last_played_id)
 
     #Display all songs
     songs = Song.objects.all()
