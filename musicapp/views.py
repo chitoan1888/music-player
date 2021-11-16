@@ -33,7 +33,7 @@ def index(request):
             last_played_song = Song.objects.get(id=last_played_id)
         else:
             first_time = True
-            last_played_list = list(Recent.objects).values('song_id').order_by('-id')
+            last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
         if last_played_list:
             last_played_id = last_played_list[0]['song_id']
             last_played_song = Song.objects.get(id=last_played_id)
