@@ -84,7 +84,7 @@ def index(request):
 
 def vn_songs(request):
 
-    vn_songs = Song.objects.filter(language='vn')
+    vn_songs = Song.objects.filter(language='Vietnamese')
 
     #Last played song
     last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
@@ -174,7 +174,10 @@ def all_songs(request):
             last_played_song = Song.objects.get(id=last_played_id)
     else:
         first_time = True
-        last_played_song = Song.objects.get(id=3)
+        last_played_list = list(Recent.objects.values('song_id').order_by('-id'))
+        if last_played_list:
+            last_played_id = last_played_list[0]['song_id']
+            last_played_song = Song.objects.get(id=last_played_id)
 
     
     # apply search filters
@@ -217,18 +220,23 @@ def recent(request):
         last_played_id = last_played_list[0]['song_id']
         last_played_song = Song.objects.get(id=last_played_id)
     else:
-        last_played_song = Song.objects.get(id=7)
+        last_played_song = Song.objects.get(id=3)
 
     #Display recent songs
-    recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
-    if recent and not request.user.is_anonymous :
+    if not request.user.is_anonymous :
+        recent = list(Recent.objects.filter(user=request.user).values('song_id').order_by('-id'))
         recent_id = [each['song_id'] for each in recent]
         recent_songs_unsorted = Song.objects.filter(id__in=recent_id,recent__user=request.user)
         recent_songs = list()
         for id in recent_id:
             recent_songs.append(recent_songs_unsorted.get(id=id))
     else:
-        recent_songs = None
+        recent = list(Recent.objects.values('song_id').order_by('-id'))
+        recent_id = [each['song_id'] for each in recent]
+        recent_songs_unsorted = Song.objects.filter(id__in=recent_id)
+        recent_songs = list()
+        for id in recent_id:
+            recent_songs.append(recent_songs_unsorted.get(id=id))
 
     if len(request.GET) > 0:
         search_query = request.GET.get('q')
@@ -257,7 +265,7 @@ def detail(request, song_id):
         last_played_id = last_played_list[0]['song_id']
         last_played_song = Song.objects.get(id=last_played_id)
     else:
-        last_played_song = Song.objects.get(id=7)
+        last_played_song = Song.objects.get(id=3)
 
 
     playlists = Playlist.objects.filter(user=request.user).values('playlist_name').distinct
